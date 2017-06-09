@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> CAP理论 · 4fun</title><meta name="description" content="CAP理论 - wangke"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="4fun"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">CAP理论</h1><div class="post-info">2017年6月9日</div><div class="post-content"><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>CAP理论指对于一个分布式计算系统来说，不可能同时满足以下三点：</p>
+<ol>
+<li><p>一致性（Consistence) </p>
+<p> 一致性指的是所有节点总是访问到最新的数据，这里的一致性指的是强一致性，即<a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf" target="_blank" rel="external">!Linearizability</a>.</p>
+</li>
+<li><p>可用性（Availability）</p>
+<p>可用性指对于每一个没有宕机的节点，总是可以返回正确的结果。这里的可用性不同于“高可用”（也就是低宕机时间）。</p>
+</li>
+<li><p>分区容错性（Network Partitioning）</p>
+<p>分区容错性指即使发生了网络分区，节点仍然可以响应客户端的请求。  </p>
+</li>
+</ol>
+<p>CAP理论认为分布式系统最多只能CAP中的两点。</p>
+<p><img src="http://howtodoinjava.com/wp-content/uploads/2015/07/CAP-Theorem-Example-e1436534705620.png" alt=""></p>
+<p>常见的单机数据库如MYSQL不提供分区容忍，属于AP的系统。</p>
+<p>而对于近年来比较火热的NOSQL，设计时更多考虑水平扩展（Scale out），大多提供分区容忍。因而要在一致性和可用性之间做出选择。</p>
+<p>以Cassandra和HBase为例，Cassandra的P2P模型提供了良好的水平扩展能力，<br>默认提供最终一致性，选择了CAP中的AP。Cassandra也可以配置成强一致性，<br>这时就要失去了CAP中的可用性A。</p>
+<p>而HBase则是常见的主从架构，牺牲了可用性，选择了CP。</p>
+<h3 id="CAP理论的不足"><a href="#CAP理论的不足" class="headerlink" title="CAP理论的不足"></a>CAP理论的不足</h3><p>CAP理论提出以来，得到了计算机理论界的广泛认可。不过也有不少人指出CAP理论的不足之处。</p>
+<p>DANIEL ABADI 在他的博文 <a href="http://dbmsmusings.blogspot.co.il/2010/04/problems-with-cap-and-yahoos-little.html" target="_blank" rel="external">Problems with CAP, and Yahoo’s little known NoSQL system</a>指出了三点CAP的不足。</p>
+<ol>
+<li><p>CP系统表面的定义是支持一致性和分区容错性，没有可用性。但是一直不可用的系统是无用的。应该的定义是只有在发生网络分区时，才牺牲可用性。</p>
+</li>
+<li><p>CA 和 CP是相同的。发生网络分区时，才会有可用性的问题，这个系统是CP的。没有网络分区时，则是可用的（CA）。本质上是同一个系统的两种情况。</p>
+</li>
+<li><p>CAP理论无法描述分布式系统中的另外一个重要属性：延迟（latency)。</p>
+</li>
+</ol>
+<p>因此他建议使用 PACELC 来替换 CAP： 如果发生了网络分区（P），可用性（A）和一致性（C）如何选择，或者（E）在正常情况，延迟（L）和一致性（C）如何取舍。</p>
+<p>Dynamo在发生网络分区时，牺牲了一致性（C），选择了可用性（A）。正常情况下，为了降低延迟（L），放弃了强一致性（C）。所以Dynamo是PA/EL。</p>
+<p>MYSQL则始终提供强一致性（C），在某些情况下选择性的放弃了可用性（A）和低延迟（L）。所以MYSQL是PC/EC.</p>
+<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><blockquote>
+<p><a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="external">CAP_theorem Wiki</a></p>
+<p><a href="http://dbmsmusings.blogspot.co.il/2010/04/problems-with-cap-and-yahoos-little.html" target="_blank" rel="external">Problems with CAP, and Yahoo’s little known NoSQL system</a></p>
+<p><a href="https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html" target="_blank" rel="external">Please stop calling databases CP or AP</a></p>
+</blockquote>
+<a id="more"></a></div></article></div></section><footer><div class="paginator"><a href="/2016/10/26/Gossip-Protocal/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2017 <a href="http://yoursite.com">wangke</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
